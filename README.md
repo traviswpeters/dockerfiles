@@ -6,9 +6,11 @@ Use with Docker http://www.docker.io.
 **References:**
 * **https://takacsmark.com/dockerfile-tutorial-by-example-dockerfile-best-practices-2018/**
 * **https://www.dataquest.io/blog/docker-data-science/**
-* https://github.com/docker-library
+* **https://github.com/jessfraz/dockerfiles**
 * https://github.com/datascienceworkshops/dockerfiles
 * https://github.com/kstaken/dockerfile-examples
+
+See also https://github.com/docker-library.
 
 ## Background
 
