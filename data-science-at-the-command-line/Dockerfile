@@ -1,7 +1,7 @@
 # Data Science at the Command Line
 
 FROM alpine:3.8
-LABEL maintainer "Jeroen Janssens <jeroen@datascienceworkshops.com>"
+LABEL maintainer "Travis Peters <traviswp@gmail.com> + Jeroen Janssens <jeroen@datascienceworkshops.com>"
 
 RUN apk update
 
@@ -68,6 +68,7 @@ RUN apk --no-cache add \
     unrar-doc \
     unzip \
     unzip-doc \
+    vim \
     xmlstarlet \
     xmlstarlet-doc \
     zlib-dev
@@ -189,9 +190,10 @@ RUN cd /tmp && \
     cp -v data-science-at-the-command-line/tools/* /usr/bin/ && \
     cp -rv data-science-at-the-command-line/data /home/ && \
     cp -rv data-science-at-the-command-line/book /home/
+    cp -rv data-science-at-the-command-line/tools /tools/ && \
 
 
-RUN rm -rf /tmp/* /var/cache/apk/*
+#RUN rm -rf /tmp/* /var/cache/apk/*
 
 RUN echo "export PAGER='less'" >>~/.bashrc && \
     echo "export SHELL='/bin/bash'" >>~/.bashrc && \
