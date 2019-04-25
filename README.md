@@ -7,10 +7,11 @@ Use with Docker http://www.docker.io.
 * **https://takacsmark.com/dockerfile-tutorial-by-example-dockerfile-best-practices-2018/**
 * **https://www.dataquest.io/blog/docker-data-science/**
 * **https://github.com/jessfraz/dockerfiles**
+    * https://github.com/jupyter/docker-stacks
 * https://github.com/datascienceworkshops/dockerfiles
 * https://github.com/kstaken/dockerfile-examples
 
-See also https://github.com/docker-library.
+See also https://hub.docker.com & https://github.com/docker-library.
 
 ## Background
 
@@ -54,6 +55,43 @@ docker run --rm --interactive --tty rethinkdb
 Or to run it in the background
 ```bash
 docker run -d rethinkdb
+```
+
+## Data Science Containers
+
+*Building the jupyter containers... to be run from ~/projects/dockerfiles*
+```bash
+cd base-notebook && docker build -t="base-notebook" .
+cd minimal-notebook && docker build -t="minimal-notebook" .
+cd scipy-notebook && docker build -t="scipy-notebook" .
+```
+
+```bash
+cd _research_notebook
+docker build -t="my-research-notebook" .
+$ docker run --rm -p 8888:8888 -v ~/projects/thesis-peters/data/:/home/twp my-research-notebook
+```
+
+```bash
+# a minimal-notebook that only has Python and Jupyter installed (with ports exposed)
+docker run -p 8888:8888 jupyter/minimal-notebook
+# the same, but with a mounted directory (HOST_DIR:CONTAINER_DIR)
+docker run -p 8888:8888 -v ~/projects/thesis-peters/data/notebooks:/home/twp jupyter/minimal-notebook
+
+# install new python modules (e.g., tensorflow)
+docker exec CONTAINERID pip install tensorflow
+
+# This command pulls the jupyter/datascience-notebook image from Docker Hub if it is not already present on the local host.
+# It then starts an ephemeral container running a Jupyter Notebook server and exposes the server on host port 10000.
+# The command mounts the current working directory on the host as /home/jovyan/work in the container.
+# The server logs appear in the terminal. Visiting http://<hostname>:10000/?token=<token> in a browser loads JupyterLab,
+# where hostname is the name of the computer running docker and token is the secret token printed in the console.
+# Docker destroys the container after notebook server exit, but any files written to ~/work in the container remain intact on the host.:
+# docker run --rm -p 8888:8888 -e JUPYTER_ENABLE_LAB=yes -v ~/projects/thesis-peters/data/:/home/twp jupyter/datascience-notebook
+```
+
+```bash
+docker run --rm -p 8888:8888 -e NB_USER=twp -e HOME=/home/$NB_USER  --user root -w /home/$NB_USER -v ~/projects/thesis-peters/data/:/home/twp jupyter/scipy-notebook start-notebook.sh
 ```
 
 ## Dockerfile Building Workflow
