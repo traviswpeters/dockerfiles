@@ -3,15 +3,50 @@ A collection of Dockerfiles. *(Some borrowed and modified; some created by me.)*
 
 Use with Docker http://www.docker.io.
 
-**References:**
+See also https://hub.docker.com & https://github.com/docker-library.
+
+## Resources
+
+#### *Highly* Recommended Resources
+* [*THE* Docker Cheatsheet :)](https://github.com/wsargent/docker-cheat-sheet)
+* [Getting Started with Docker in Development](https://rock-it.pl/getting-started-with-docker-in-development/)
+* [10 Docker Image Security Best Practices](https://snyk.io/blog/10-docker-image-security-best-practices/)
+* [How to Write Excellent Dockerfiles](https://rock-it.pl/how-to-write-excellent-dockerfiles/)
+* [Building Better Docker Images](https://jonathan.bergknoff.com/journal/building-better-docker-images/)
+
+#### Get Images
+* [Docker Hub](https://hub.docker.com/search?q=&type=image)
+* [Alpine Linux](https://alpinelinux.org) is often recommended as a base image.
+
+#### Dockerfile References & Sources
 * **https://takacsmark.com/dockerfile-tutorial-by-example-dockerfile-best-practices-2018/**
-* **https://www.dataquest.io/blog/docker-data-science/**
 * **https://github.com/jessfraz/dockerfiles**
-    * https://github.com/jupyter/docker-stacks
+* **https://github.com/jupyter/docker-stacks**
+* **https://www.dataquest.io/blog/docker-data-science/**
 * https://github.com/datascienceworkshops/dockerfiles
 * https://github.com/kstaken/dockerfile-examples
 
-See also https://hub.docker.com & https://github.com/docker-library.
+#### Notebooks & Datasets
+- [ ] [Seaborne - Example Gallery](https://seaborn.pydata.org/examples/index.html)
+- [ ] [A gallery of interesting Jupyter Notebooks](https://github.com/jupyter/jupyter/wiki/A-gallery-of-interesting-Jupyter-Notebooks)
+- [ ] [Official matplotlib gallery](https://matplotlib.org/gallery.html)
+- [ ] [matplotlib-gallery](https://github.com/rasbt/matplotlib-gallery) (IPython Notebooks)
+- [ ] [Estimate of Public Jupyter Notebooks on GitHub](https://github.com/parente/nbestimate)
+
+#### Notebooks & Datasets
+- [ ] [Probabilistic Programming and Bayesian Methods for Hackers](https://nbviewer.jupyter.org/github/CamDavidsonPilon/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers/blob/master/Chapter1_Introduction/Ch1_Introduction_PyMC3.ipynb)
+- [ ] [Bokeh](https://nbviewer.jupyter.org/github/bokeh/bokeh-notebooks/blob/master/index.ipynb)
+- [ ] [Plotly](https://nbviewer.jupyter.org/github/plotly/python-user-guide/blob/master/Index.ipynb)
+- [ ] [XKCD Plots?!](https://nbviewer.jupyter.org/url/jakevdp.github.com/downloads/notebooks/XKCD_plots.ipynb)
+- [ ] [Lightning + Jupyter](https://nbviewer.jupyter.org/github/lightning-viz/lightning-example-notebooks/blob/master/index.ipynb)
+- [ ] [Python for Signal Processing](https://nbviewer.jupyter.org/github/unpingco/Python-for-Signal-Processing/tree/master/)
+- [ ] [Current Events Analysis](https://nbviewer.jupyter.org/gist/darribas/4121857)
+
+#### Later...
+
+- [x] [Matplotlib tutorial: Plotting tweets mentioning Trump, Clinton, and Sanders](https://www.dataquest.io/blog/matplotlib-tutorial/)
+- [ ] [Making Publication Ready Python Notebooks](http://blog.juliusschulz.de/blog/ultimate-ipython-notebook)
+- [ ] [Using Interact](https://ipywidgets.readthedocs.io/en/stable/examples/Using%20Interact.html)
 
 ## Background
 
@@ -37,6 +72,20 @@ you can run databases, web servers, web frameworks, test servers, execute big da
 
 Docker containers are started by running a **Docker image**. A Docker image is a pre-built environment for a certain technology or service. A Docker image is not a runtime, it’s rather a collection of files, libraries and configuration files that build up an environment.
 
+## Keyboard shortcuts
+* Toggle between **edit** and **command** mode with `Esc` and `Enter`, respectively.
+* Once in **command** mode:
+    * Scroll up and down your cells with your Up and Down keys.
+    * Press `A` or `B` to insert a new cell above or below the active cell.
+    * `M` will transform the active cell to a Markdown cell.
+    * `Y` will set the active cell to a code cell.
+    * `D + D` (D twice) will delete the active cell.
+    * `Z` will undo cell deletion.
+    * Hold `Shift` and press `Up` or `Down` to select multiple cells at once.
+    * With multiple cells selected, `Shift + M` will merge your selection.
+* `Ctrl + Shift + -`, in edit mode, will split the active cell at the cursor.
+* You can also click and `Shift + Click` in the margin to the left of your cells to select them.
+
 ## Building Containers from Images
 
 To build an image with docker is pretty simple.
@@ -57,9 +106,11 @@ Or to run it in the background
 docker run -d rethinkdb
 ```
 
-## Data Science Containers
+## Working with the Data Science Containers
 
-*Building the jupyter containers... to be run from ~/projects/dockerfiles*
+See: **https://github.com/jupyter/docker-stacks**.
+
+*Building and working with the official Jupyter containers... to be run from `~/projects/dockerfiles`*
 ```bash
 cd base-notebook && docker build -t="base-notebook" .
 cd minimal-notebook && docker build -t="minimal-notebook" .
@@ -77,10 +128,15 @@ $ docker run --rm -p 8888:8888 -v ~/projects/thesis-peters/data/:/home/twp my-re
 docker run -p 8888:8888 jupyter/minimal-notebook
 # the same, but with a mounted directory (HOST_DIR:CONTAINER_DIR)
 docker run -p 8888:8888 -v ~/projects/thesis-peters/data/notebooks:/home/twp jupyter/minimal-notebook
+```
 
-# install new python modules (e.g., tensorflow)
+```bash
+# install new python modules (e.g., tensorflow) from outside the container.
+# NOTE: changes made in this way will not persist from container to container.
 docker exec CONTAINERID pip install tensorflow
+```
 
+```bash
 # This command pulls the jupyter/datascience-notebook image from Docker Hub if it is not already present on the local host.
 # It then starts an ephemeral container running a Jupyter Notebook server and exposes the server on host port 10000.
 # The command mounts the current working directory on the host as /home/jovyan/work in the container.
@@ -88,11 +144,27 @@ docker exec CONTAINERID pip install tensorflow
 # where hostname is the name of the computer running docker and token is the secret token printed in the console.
 # Docker destroys the container after notebook server exit, but any files written to ~/work in the container remain intact on the host.:
 # docker run --rm -p 8888:8888 -e JUPYTER_ENABLE_LAB=yes -v ~/projects/thesis-peters/data/:/home/twp jupyter/datascience-notebook
-```
-
-```bash
 docker run --rm -p 8888:8888 -e NB_USER=twp -e HOME=/home/$NB_USER  --user root -w /home/$NB_USER -v ~/projects/thesis-peters/data/:/home/twp jupyter/scipy-notebook start-notebook.sh
 ```
+## Share
+
+***There are many options for sharing notebooks...***
+
+- https://nbviewer.jupyter.org - A simple way to share Jupyter Notebooks
+(see the note about [Rendering Notebooks on GitHub
+](https://blog.jupyter.org/rendering-notebooks-on-github-f7ac8736d686))
+- https://mybinder.org - Turn a Git repo into a collection of interactive notebooks
+- https://kyso.io - Create, upload and share your data-science notebooks, charts, datasets and articles.
+
+***Before you share...***
+
+A shared notebook will appear exactly in the state it was in when you export or save it, including the output of any code cells. Therefore, to ensure that your notebook is share-ready, so to speak, there are a few steps you should take before sharing:
+- Click “Cell > All Output > Clear”.
+- Click “Kernel > Restart & Run All”.
+
+Wait for your code cells to finish executing and check they did so as expected.
+
+This will ensure your notebooks don’t contain intermediary output, have a stale state, and executed in order at the time of sharing.
 
 ## Dockerfile Building Workflow
 
